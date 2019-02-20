@@ -1,0 +1,78 @@
+// DOM Load Event
+document.addEventListener('DOMContentLoaded', Store.displayTasks);
+
+// Event Listeners to Add task
+document.getElementById('task-form').addEventListener('submit', function(e) {
+
+    //Get form values
+    const title = document.getElementById('title').value,
+        content = document.getElementById('taches').value
+
+    //Instantiate task
+    const task = new Task(title, content);
+
+    //Instantiate UI
+    const ui = new UI();
+
+    //Validate
+    if (title === '' || taches === '') {
+
+        ui.showAlert('Tous les champs sont Obligatoires', 'task-error');
+
+    } else {
+
+        //Add task to list
+        ui.addTaskToList(task);
+
+        //Add to LS
+        Store.AddTasks(task);
+
+        //Show success
+        ui.showAlert('Tâches ajouté !', 'task-success');
+
+        //Clear fields
+        ui.clearFields();
+    }
+
+    e.preventDefault();
+});
+
+// Event Listeners to Delete task
+
+document.getElementById('task-list').addEventListener('click', function(e) {
+    //Instantiate UI
+    const ui = new UI();
+
+    // Delete Task
+    ui.deleteTask(e.target);
+
+    // Remove from LS
+    Store.removeTasks(e.target.parentElement.previousElementSibling.textContent);
+
+    // Show message
+    ui.showAlert('Tâches supprimer !', 'task-success')
+
+
+
+    e.preventDefault();
+});
+
+// send mail to customers
+
+
+function send_mail(id) {
+
+    $.ajax({
+        url: 'Admin_Dashbd/getClientForEmail/' + id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data) {
+            $('[name="email"]').val(data.email);
+            $('#clientAdminMsg').modal('show');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("Error, Updating Data");
+        }
+    });
+
+}
